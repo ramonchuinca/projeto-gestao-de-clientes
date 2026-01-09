@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ClientController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         return Client::paginate(10);
@@ -15,11 +18,11 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nome' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients',
+            'nome'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:clients',
             'telefone' => 'nullable|string',
-            'cpf' => 'required|string|unique:clients',
-            'status' => 'boolean',
+            'cpf'      => 'required|string|unique:clients',
+            'status'   => 'boolean',
         ]);
 
         $client = Client::create($data);
@@ -35,11 +38,11 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         $data = $request->validate([
-            'nome' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients,email,' . $client->id,
+            'nome'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:clients,email,' . $client->id,
             'telefone' => 'nullable|string',
-            'cpf' => 'required|string|unique:clients,cpf,' . $client->id,
-            'status' => 'boolean',
+            'cpf'      => 'required|string|unique:clients,cpf,' . $client->id,
+            'status'   => 'boolean',
         ]);
 
         $client->update($data);
@@ -47,9 +50,9 @@ class ClientController extends Controller
         return response()->json($client);
     }
 
-    public function destroy(Request $request, Client $client)
+    public function destroy(Client $client)
     {
-        // Verificar a permissão antes de excluir
+        // Autorização via Policy
         $this->authorize('delete', $client);
 
         $client->delete();

@@ -10,10 +10,12 @@ class ClientPolicy
     /**
      * Determine whether the user can delete the client.
      */
-    public function delete(User $user, Client $client): bool
-    {
-        return $user->role === 'admin';
-    }
+   // app/Policies/ClientPolicy.php
+public function delete(User $user)
+{
+    return $user->isAdmin();
+}
+
 
     // Outros métodos podem ser implementados conforme necessário
 }

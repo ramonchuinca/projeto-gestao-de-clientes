@@ -12,20 +12,17 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Campos que podem ser preenchidos em massa
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role', // ADICIONADO PARA PODER DEFINIR ADMIN/USER
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * Campos escondidos na serialização
      */
     protected $hidden = [
         'password',
@@ -33,12 +30,18 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Casts
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password' => 'hashed', // Laravel 10+ já faz hash automaticamente
     ];
+
+    /**
+     * Verifica se o usuário é admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }
